@@ -27,7 +27,7 @@ class NetworkClient {
 
 
       System.out.println("\nServer Response");
-      for(int i=0; i<5; i++){
+      for(int i=0; i<4; i++){
         System.out.println(inFromServer.readLine());
       }
 

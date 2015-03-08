@@ -43,7 +43,6 @@ class NetworkServer {
         outToClient.writeBytes("Cost to Router 0: 1\n");
         outToClient.writeBytes("Cost to Router 1: 0\n");
         outToClient.writeBytes("Cost to Router 2: 1\n");
-        outToClient.writeBytes("Cost to Router 3: N/A\n");
         System.out.println("Finished");
       } catch(IOException e){
         e.printStackTrace();
