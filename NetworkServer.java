@@ -56,19 +56,15 @@ class NetworkServer {
                 ObjectOutputStream out = new ObjectOutputStream(connectionSocket.getOutputStream());
                 ObjectInputStream in = new ObjectInputStream(connectionSocket.getInputStream());
 
-                out.writeObject(myRouterNumber);
-                out.writeObject(myLeastCostPathInterfaces);
-                out.writeObject(myLeastCostPathWeights);
-
-
-                System.out.println("\nServer Response");
-
                 Integer routerNumber = (Integer)(in.readObject());
                 Map<Integer, String> leastCostPathInterfaces = (Map<Integer, String>)(in.readObject());
                 Map<Integer, Integer> leastCostPathWeight = (Map<Integer, Integer>)(in.readObject());
 
                 if(calculateNewLeastCostPath(routerNumber, leastCostPathWeight)){
-                    System.out.println("Should Send Update Here!");
+                    System.out.println("\nServer Response");
+                    out.writeObject(myRouterNumber);
+                    out.writeObject(myLeastCostPathInterfaces);
+                    out.writeObject(myLeastCostPathWeights);
                 }
 
 
@@ -85,13 +81,7 @@ class NetworkServer {
             boolean changesMade = false;
 
             for(Map.Entry<Integer, Integer> entry: Weights.entrySet()){
-                if(myLeastCostPathWeights.containsKey(entry.getKey())){
-                    if (entry.getValue()+baseValueForPath < myLeastCostPathWeights.get(entry.getKey())) {
-                        changesMade = true;
-                        myLeastCostPathWeights.replace(entry.getKey(),entry.getValue()+baseValueForPath);
-                        myLeastCostPathInterfaces.replace(entry.getKey(), myLeastCostPathInterfaces.get(Router));
-                    }
-                } else {
+                if(!myLeastCostPathWeights.containsKey(entry.getKey()) || entry.getValue()+baseValueForPath < myLeastCostPathWeights.get(entry.getKey())){
                     changesMade = true;
                     myLeastCostPathWeights.put(entry.getKey(),entry.getValue()+baseValueForPath);
                     myLeastCostPathInterfaces.put(entry.getKey(), myLeastCostPathInterfaces.get(Router));
