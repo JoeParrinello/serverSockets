@@ -66,11 +66,17 @@ class NetworkClient {
         Integer baseValueForPath = myLeastCostPathWeights.get(Router);
         boolean changesMade = false;
 
-        for (int i = 0; i<4; i++){
-            if (Weights.get(i)+baseValueForPath < myLeastCostPathWeights.get(i)) {
+        for(Map.Entry<Integer, Integer> entry: Weights.entrySet()){
+            if(myLeastCostPathWeights.containsKey(entry.getKey())){
+                if (entry.getValue()+baseValueForPath < myLeastCostPathWeights.get(entry.getKey())) {
+                    changesMade = true;
+                    myLeastCostPathWeights.replace(entry.getKey(),entry.getValue()+baseValueForPath);
+                    myLeastCostPathInterfaces.replace(entry.getKey(), myLeastCostPathInterfaces.get(Router));
+                }
+            } else {
                 changesMade = true;
-                myLeastCostPathWeights.replace(i, Weights.get(i)+baseValueForPath);
-                myLeastCostPathInterfaces.replace(i, myLeastCostPathInterfaces.get(Router));
+                myLeastCostPathWeights.put(entry.getKey(),entry.getValue()+baseValueForPath);
+                myLeastCostPathInterfaces.put(entry.getKey(), myLeastCostPathInterfaces.get(Router));
             }
         }
 

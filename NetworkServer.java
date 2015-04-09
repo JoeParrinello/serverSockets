@@ -51,9 +51,6 @@ class NetworkServer {
             myLeastCostPathInterfaces.put(2,"I0");
             myLeastCostPathWeights.put(2,1);
 
-            myLeastCostPathInterfaces.put(3,"I99");
-            myLeastCostPathWeights.put(3,Integer.MAX_VALUE/2);
-
             try {
 
                 ObjectOutputStream out = new ObjectOutputStream(connectionSocket.getOutputStream());
@@ -87,11 +84,17 @@ class NetworkServer {
             Integer baseValueForPath = myLeastCostPathWeights.get(Router);
             boolean changesMade = false;
 
-            for (int i = 0; i<4; i++){
-                if (Weights.get(i)+baseValueForPath < myLeastCostPathWeights.get(i)) {
+            for(Map.Entry<Integer, Integer> entry: Weights.entrySet()){
+                if(myLeastCostPathWeights.containsKey(entry.getKey())){
+                    if (entry.getValue()+baseValueForPath < myLeastCostPathWeights.get(entry.getKey())) {
+                        changesMade = true;
+                        myLeastCostPathWeights.replace(entry.getKey(),entry.getValue()+baseValueForPath);
+                        myLeastCostPathInterfaces.replace(entry.getKey(), myLeastCostPathInterfaces.get(Router));
+                    }
+                } else {
                     changesMade = true;
-                    myLeastCostPathWeights.replace(i, Weights.get(i)+baseValueForPath);
-                    myLeastCostPathInterfaces.replace(i, myLeastCostPathInterfaces.get(Router));
+                    myLeastCostPathWeights.put(entry.getKey(),entry.getValue()+baseValueForPath);
+                    myLeastCostPathInterfaces.put(entry.getKey(), myLeastCostPathInterfaces.get(Router));
                 }
             }
 
