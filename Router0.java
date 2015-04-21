@@ -3,13 +3,13 @@ import java.net.*;
 import java.util.HashMap;
 import java.util.Map;
 
-class NetworkClient {
+class Router0 {
 
     public final Integer myRouterNumber = 0;
     public Map<Integer, String> myLeastCostPathInterfaces;
     public Map<Integer, Integer> myLeastCostPathWeights;
 
-    public NetworkClient(){
+    public Router0(){
         myLeastCostPathInterfaces = new HashMap<Integer, String>();
         myLeastCostPathWeights = new HashMap<Integer, Integer>();
 
@@ -85,6 +85,6 @@ class NetworkClient {
     }
 
     public static void main(String argv[]) {
-        new NetworkClient();
+        new Router0();
     }
 }

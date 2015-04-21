@@ -3,9 +3,9 @@ import java.net.*;
 import java.util.HashMap;
 import java.util.Map;
 
-class NetworkServer {
+class Router1 {
 
-    public NetworkServer(){
+    public Router1(){
         try {
             ServerSocket serverSocket = new ServerSocket(8001);
 
@@ -20,7 +20,7 @@ class NetworkServer {
     }
 
     public static void main(String argv[]){
-        new NetworkServer();
+        new Router1();
 
     }
 
