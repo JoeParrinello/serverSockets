@@ -41,10 +41,10 @@ class Router1 {
             myLeastCostPathInterfaces = new HashMap<Integer, String>();
             myLeastCostPathWeights = new HashMap<Integer, Integer>();
 
-            //My Own, if this Router is Zero.
             myLeastCostPathInterfaces.put(0,"I2");
             myLeastCostPathWeights.put(0,1);
 
+            //My Own, if this Router is 1.
             myLeastCostPathInterfaces.put(1,"local");
             myLeastCostPathWeights.put(1,0);
 

@@ -29,7 +29,7 @@ class Router2 {
 
         private Socket connectionSocket;
 
-        private final Integer myRouterNumber = 1;
+        private final Integer myRouterNumber = 2;
         private Map<Integer, String> myLeastCostPathInterfaces;
         private Map<Integer, Integer> myLeastCostPathWeights;
 
@@ -41,15 +41,18 @@ class Router2 {
             myLeastCostPathInterfaces = new HashMap<Integer, String>();
             myLeastCostPathWeights = new HashMap<Integer, Integer>();
 
-            //My Own, if this Router is Zero.
             myLeastCostPathInterfaces.put(0,"I2");
-            myLeastCostPathWeights.put(0,1);
+            myLeastCostPathWeights.put(0,3);
 
-            myLeastCostPathInterfaces.put(1,"local");
-            myLeastCostPathWeights.put(1,0);
+            myLeastCostPathInterfaces.put(1,"I0");
+            myLeastCostPathWeights.put(1,1);
 
-            myLeastCostPathInterfaces.put(2,"I0");
-            myLeastCostPathWeights.put(2,1);
+            //My Own, if this Router is Two.
+            myLeastCostPathInterfaces.put(2,"local");
+            myLeastCostPathWeights.put(2,0);
+
+            myLeastCostPathInterfaces.put(3,"I1");
+            myLeastCostPathWeights.put(3,2);
 
             try {
 
