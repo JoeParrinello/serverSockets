@@ -19,11 +19,11 @@ class Router2 {
 
         myLeastCostPathInterfaces.put(0,"I2");
         myLeastCostPathWeights.put(0,3);
-        myHostnames.put(0,"127.0.0.1");
+        myHostnames.put(0,"osl12.njit.edu");
 
         myLeastCostPathInterfaces.put(1,"I0");
         myLeastCostPathWeights.put(1,1);
-        myHostnames.put(1,"127.0.0.1");
+        myHostnames.put(1,"osl24.njit.edu");
 
         //My Own, if this Router is Two.
         myLeastCostPathInterfaces.put(2,"local");
@@ -31,7 +31,7 @@ class Router2 {
 
         myLeastCostPathInterfaces.put(3,"I1");
         myLeastCostPathWeights.put(3,2);
-        myHostnames.put(3,"127.0.0.1");
+        myHostnames.put(3,"osl31.njit.edu");
 
         output();
         try {

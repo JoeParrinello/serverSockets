@@ -24,15 +24,15 @@ class Router0 {
 
         myLeastCostPathInterfaces.put(1,"I0");
         myLeastCostPathWeights.put(1,1);
-        myHostnames.put(1,"127.0.0.1");
+        myHostnames.put(1,"osl24.njit.edu");
 
         myLeastCostPathInterfaces.put(2,"I1");
         myLeastCostPathWeights.put(2,3);
-        myHostnames.put(2,"127.0.0.1");
+        myHostnames.put(2,"osl17.njit.edu");
 
         myLeastCostPathInterfaces.put(3,"I2");
         myLeastCostPathWeights.put(3,7);
-        myHostnames.put(3,"127.0.0.1");
+        myHostnames.put(3,"osl31.njit.edu");
 
         output();
 
