@@ -32,7 +32,7 @@ class Router0 {
 
         myLeastCostPathInterfaces.put(3,"I2");
         myLeastCostPathWeights.put(3,7);
-        myHostnames.put(3,"osl31.njit.edu");
+        myHostnames.put(3,"osl30.njit.edu");
 
         output();
 
