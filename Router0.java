@@ -5,13 +5,18 @@ import java.util.Map;
 
 class Router0 {
 
-    public final Integer myRouterNumber = 0;
-    public Map<Integer, String> myLeastCostPathInterfaces;
-    public Map<Integer, Integer> myLeastCostPathWeights;
+    private final Integer myRouterNumber = 0;
+    private Map<Integer, String> myLeastCostPathInterfaces;
+    private Map<Integer, Integer> myLeastCostPathWeights;
+    private Map<Integer, String>  myHostnames;
+    private boolean ReadyForUpdate = true;
 
     public Router0(){
+
         myLeastCostPathInterfaces = new HashMap<Integer, String>();
         myLeastCostPathWeights = new HashMap<Integer, Integer>();
+        myHostnames = new HashMap<Integer, String>();
+
 
         //My Own, if this Router is Zero.
         myLeastCostPathInterfaces.put(0,"local");
@@ -19,63 +24,126 @@ class Router0 {
 
         myLeastCostPathInterfaces.put(1,"I0");
         myLeastCostPathWeights.put(1,1);
+        myHostnames.put(1,"127.0.0.1");
 
         myLeastCostPathInterfaces.put(2,"I1");
         myLeastCostPathWeights.put(2,3);
+        myHostnames.put(2,"127.0.0.1");
 
         myLeastCostPathInterfaces.put(3,"I2");
         myLeastCostPathWeights.put(3,7);
+        myHostnames.put(3,"127.0.0.1");
 
-        BufferedReader inFromUser = new BufferedReader(new InputStreamReader(System.in));
-        System.out.print("Hostname: ");
+        output();
+
+        for(Map.Entry<Integer,String> entry: myHostnames.entrySet()){
+            new UpdaterThread(entry.getValue(), entry.getKey(), entry.getKey()==1).run();
+        }
+
         try {
-            Socket clientSocket = new Socket(inFromUser.readLine(), 8001);
+            ServerSocket serverSocket = new ServerSocket(8001 + myRouterNumber);
 
-            output();
-
-            ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
-            ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
-
-            out.writeObject(myRouterNumber);
-            out.writeObject(myLeastCostPathInterfaces);
-            out.writeObject(myLeastCostPathWeights);
-
-
-            System.out.println("\nServer Response");
-
-            Integer routerNumber = (Integer)(in.readObject());
-            Map<Integer, String> leastCostPathInterfaces = (Map<Integer, String>)(in.readObject());
-            Map<Integer, Integer> leastCostPathWeight = (Map<Integer, Integer>)(in.readObject());
-
-            if(calculateNewLeastCostPath(routerNumber, leastCostPathWeight)){
-                System.out.println("Should Send Update Here!");
+            while(true) {
+                new ServerThread(serverSocket.accept()).run();
             }
-
-            output();
-
-            clientSocket.close();
-        } catch(IOException e){
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IOException e){
             e.printStackTrace();
         }
 
+
     }
 
-    private boolean calculateNewLeastCostPath(Integer Router, Map<Integer, Integer> Weights){
+    private synchronized void calculateNewLeastCostPath(Integer Router, Map<Integer, Integer> Weights) {
         Integer baseValueForPath = myLeastCostPathWeights.get(Router);
         boolean changesMade = false;
 
-        for(Map.Entry<Integer, Integer> entry: Weights.entrySet()){
-            if(!myLeastCostPathWeights.containsKey(entry.getKey()) || entry.getValue()+baseValueForPath < myLeastCostPathWeights.get(entry.getKey())){
+        for (Map.Entry<Integer, Integer> entry : Weights.entrySet()) {
+            if (!myLeastCostPathWeights.containsKey(entry.getKey()) || entry.getValue() + baseValueForPath < myLeastCostPathWeights.get(entry.getKey())) {
                 changesMade = true;
-                myLeastCostPathWeights.put(entry.getKey(),entry.getValue()+baseValueForPath);
+                myLeastCostPathWeights.put(entry.getKey(), entry.getValue() + baseValueForPath);
                 myLeastCostPathInterfaces.put(entry.getKey(), myLeastCostPathInterfaces.get(Router));
             }
         }
-
-        return changesMade;
+        if(changesMade){
+            ReadyForUpdate = changesMade;
+            output();
+        }
     }
+
+    public static void main(String argv[]){
+        new Router0();
+
+    }
+
+
+    private class ServerThread extends Thread{
+
+        private Socket connectionSocket;
+
+        public ServerThread(Socket connectionSocket){
+            this.connectionSocket = connectionSocket;
+        }
+
+        public void run(){
+
+
+            try {
+                ObjectInputStream in = new ObjectInputStream(connectionSocket.getInputStream());
+
+                Integer routerNumber = (Integer)(in.readObject());
+                Map<Integer, String> leastCostPathInterfaces = (Map<Integer, String>)(in.readObject());
+                Map<Integer, Integer> leastCostPathWeight = (Map<Integer, Integer>)(in.readObject());
+
+                calculateNewLeastCostPath(routerNumber, leastCostPathWeight);
+
+                String command = (String)in.readObject();
+
+                if (command.equals("UPDATE") && ReadyForUpdate){
+                    ReadyForUpdate = false;
+                    for(Map.Entry<Integer,String> entry: myHostnames.entrySet()){
+                        new UpdaterThread(entry.getValue(), entry.getKey(), entry.getKey()==(routerNumber+2)%4).run();
+                    }
+                }
+
+                connectionSocket.close();
+            } catch(IOException e){
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+    }
+
+    private class UpdaterThread extends Thread {
+        private Socket connectionSocket;
+        private boolean UpdateLauncher;
+
+        public UpdaterThread(String Hostname, Integer RouterNumber, Boolean UpdateLauncher){
+            try {
+                connectionSocket = new Socket(Hostname, 8001+RouterNumber);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            this.UpdateLauncher = UpdateLauncher;
+        }
+
+        public void run(){
+            try {
+                ObjectOutputStream out = new ObjectOutputStream(connectionSocket.getOutputStream());
+                out.writeObject(myRouterNumber);
+                out.writeObject(myLeastCostPathInterfaces);
+                out.writeObject(myLeastCostPathWeights);
+                out.writeObject(UpdateLauncher ? "UPDATE" : "TERMINATE");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+
 
     private void output(){
         System.out.printf("|R%-10c|I%-9c|Weight%n",'#','#');
@@ -84,7 +152,5 @@ class Router0 {
         }
     }
 
-    public static void main(String argv[]) {
-        new Router0();
-    }
+
 }

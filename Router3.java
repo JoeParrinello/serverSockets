@@ -15,6 +15,7 @@ class Router3 {
 
         myLeastCostPathInterfaces = new HashMap<Integer, String>();
         myLeastCostPathWeights = new HashMap<Integer, Integer>();
+        myHostnames = new HashMap<Integer, String>();
 
         myLeastCostPathInterfaces.put(0,"I0");
         myLeastCostPathWeights.put(0,7);
