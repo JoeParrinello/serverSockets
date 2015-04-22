@@ -3,15 +3,9 @@ import java.net.*;
 import java.util.HashMap;
 import java.util.Map;
 
-
-import java.io.*;
-import java.net.*;
-import java.util.HashMap;
-import java.util.Map;
-
 class Router3 {
 
-    private final Integer myRouterNumber = 2;
+    private final Integer myRouterNumber = 3;
     private Map<Integer, String> myLeastCostPathInterfaces;
     private Map<Integer, Integer> myLeastCostPathWeights;
     private Map<Integer, String>  myHostnames;
