@@ -33,7 +33,7 @@ class Router2 {
         myLeastCostPathWeights.put(3,2);
         myHostnames.put(3,"127.0.0.1");
 
-
+        output();
         try {
             ServerSocket serverSocket = new ServerSocket(8001 + myRouterNumber);
 
@@ -92,6 +92,7 @@ class Router2 {
                 String command = (String)in.readObject();
 
                 if (command.equals("UPDATE")){
+                    output();
                     for(Map.Entry<Integer,String> entry: myHostnames.entrySet()){
                         new UpdaterThread(entry.getValue(), entry.getKey(), entry.getKey()==(routerNumber+2)%4).run();
                     }
@@ -132,6 +133,13 @@ class Router2 {
                 e.printStackTrace();
             }
 
+        }
+    }
+
+    private void output(){
+        System.out.printf("|R%-10c|I%-9c|Weight%n",'#','#');
+        for(int i = 0; i < 4; i++){
+            System.out.printf("|R%-10d|%-10s|%-10d%n", i, myLeastCostPathInterfaces.get(i), myLeastCostPathWeights.get(i));
         }
     }
 }
